@@ -59,6 +59,8 @@ const genericErrorHandler = (err, req, res, next) => {
 
 app.options('*', cors()); // enable pre-flight request for routes other than GET/HEAD/POST
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static('public')); // serve files in the 'public' directory
 app.use('/user', users);
 app.use('/post', posts);
 app.use('/comment', comments);
