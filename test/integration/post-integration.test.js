@@ -3,7 +3,9 @@ const chaiHttp = require('chai-http');
 const ObjectId = require('mongoose').Types.ObjectId;
 const app = require('../../app.js');
 const postList = require('../data/posts.json');
+const commentList = require('../data/comments.json');
 const Post = require('../../model/post');
+const Comment = require('../../model/comment');
 
 const expect = chai.expect;
 const should = chai.should();
@@ -12,19 +14,25 @@ chai.use(chaiHttp);
 
 describe('Post integration test', function() {
     let testData = [];
+    let commentData = [];
 
-    this.beforeEach(function setup(done) {
-        Post.insertMany(postList, (err, res) => {
-            testData = res;
-            done();
-        });
+    // do not use done as a parameter, only for callbacks, not async functions
+    this.beforeEach(async () => {
+        try {
+            console.log(postList);
+            testData = await Post.insertMany(postList);
+            commentData = await Comment.insertMany(commentList);
+        } catch (err) {
+        }
+        
     });
 
-    this.afterEach(function tearDown(done) {
-        Post.deleteMany({}, (err, res) => {
-            testData = [];
-            done();
-        });
+    this.afterEach(async () => {
+        try {
+            await Comment.deleteMany();
+            await Post.deleteMany();
+        } catch (err) {
+        }
     });
 
     describe('GET /post', () => {
