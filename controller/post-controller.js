@@ -32,11 +32,6 @@ module.exports = {
         res.status(200).json(post);
     },
 
-    addComment: async(req, res, next) => {
-        const post = await postService.addCommentById(req.params.commentId, req.params.postId).catch(next);
-        res.status(200).json(post);
-    },
-
     deleteByTitle: async(req, res, next) => {       
         const post = await postService.deleteByTitle(req.params.title).catch(next);
 

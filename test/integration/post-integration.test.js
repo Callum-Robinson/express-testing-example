@@ -187,7 +187,7 @@ describe('Post integration test', function() {
         });
     });
 
-    describe('DELETE /:id', () => {
+    describe('DELETE /post/:id', () => {
         it('should delete a document by its id if it exists and return the document', done => {
             const id = testData[0]._id;
 
@@ -207,6 +207,35 @@ describe('Post integration test', function() {
 
             chai.request(app)
                 .delete(`/post/${id}`)
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(404);
+                    expect(res).to.be.json;
+                    done();
+                });
+        });
+    });
+
+    describe('DELETE /post/title/:title', () => {
+        it('should delete a document by its title if it exists and return the document', done => {
+            const title = testData[0].title;
+
+            chai.request(app)
+                .delete(`/post/title/${title}`)
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(200);
+                    expect(res).to.be.json;
+                    expect(res.body).to.deep.equal(JSON.parse(JSON.stringify(testData[0])));
+                    done();
+                });
+        });
+
+        it('should return a 404 and not delete a document if the specified title does not exist', done => {
+            const title = "not the title";
+
+            chai.request(app)
+                .delete(`/post/title/${title}`)
                 .end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(404);

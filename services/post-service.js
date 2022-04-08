@@ -22,12 +22,6 @@ module.exports = {
         return result.save();
     },
 
-    addCommentById: async (commentId, postId) => {
-        const post = await readById(postId);
-        post.comments.push(commentId);
-        return post.save();
-    },
-
     deleteByTitle: async title => Post.findOneAndDelete({ title }),
     
     deleteById: async id => Post.findOneAndDelete({ _id: id })
