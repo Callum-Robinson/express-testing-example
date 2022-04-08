@@ -19,6 +19,8 @@ describe('Post integration test', function() {
     // do not use done as a parameter, only for non-async callbacks, not async
     this.beforeEach(async () => {
         try {
+            await Comment.deleteMany();
+            await Post.deleteMany();
             testData = await Post.insertMany(postList);
             commentData = await Comment.insertMany(commentList);
             
@@ -41,11 +43,12 @@ describe('Post integration test', function() {
         } 
     });
 
-    this.afterEach(async () => {
+    this.afterAll(async () => {
         try {
             await Comment.deleteMany();
             await Post.deleteMany();
         } catch (err) {
+            console.error(err);
         }
     });
 
