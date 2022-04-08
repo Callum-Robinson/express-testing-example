@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API Documentation</title>
+    <link rel="stylesheet" href="./stylesheets/style.css" />
 </head>
 <body>
     <main>
@@ -14,12 +15,12 @@
             <article>
                 <h3>Reading</h3>
                 <p>Send a request to read all posts using a GET request:</p>
-                <code>fetch('http://localhost:3000/post').then(data => processData(data)).catch(err => handleError(err));</code>
+                <code class="code">fetch('http://localhost:3000/post').then(data => processData(data)).catch(err => handleError(err));</code>
             </article>
             <article>
                 <h3>Reading by id</h3>
                 <p>Send a request to read a post by its id using a GET request, include it as a path variable:</p>
-                <code>fetch('http://localhost:3000/post').then(data => processData(data)).catch(err => handleError(err));</code>
+                <code class="code">fetch('http://localhost:3000/post/624f543911135c2c00a2c7fa').then(data => processData(data)).catch(err => handleError(err));</code>
             </article>
         </section>
     </main>
