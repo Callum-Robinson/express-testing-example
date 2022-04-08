@@ -18,7 +18,6 @@ module.exports = {
             return post.save();
         }
         // post does exist, proceed to update
-        console.log(result);
         mergeProperties(result, post);
         return result.save();
     },

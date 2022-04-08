@@ -16,15 +16,29 @@ describe('Post integration test', function() {
     let testData = [];
     let commentData = [];
 
-    // do not use done as a parameter, only for callbacks, not async functions
+    // do not use done as a parameter, only for non-async callbacks, not async
     this.beforeEach(async () => {
         try {
             testData = await Post.insertMany(postList);
             commentData = await Comment.insertMany(commentList);
+            
+            // add comments to posts manually
+            for (let i = 0; i < testData.length; i++) {
+                const currentPost = await Post.findById(testData[i]._id);
+                for (let j = 0; j < commentData.length; j++) {
+                    const currentComment = commentData[i];
+                    if (currentPost._id.toString() === currentComment.postId.toString()) {
+                        currentPost.comments.push(currentComment._id);
+                    }
+                }
+                await currentPost.save();
+            }
+
+            // retrieve posts with comments
+            testData = await Post.find().populate('comments');
         } catch (err) {
             console.error(err);
-        }
-        
+        } 
     });
 
     this.afterEach(async () => {

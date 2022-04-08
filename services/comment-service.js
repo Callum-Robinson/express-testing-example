@@ -28,7 +28,6 @@ module.exports = {
             return comment.save();
         }
         // comment does exist, proceed to update
-        console.log(result);
         mergeProperties(result, comment);
         return result.save();
     },
@@ -45,7 +44,9 @@ module.exports = {
         if (!post) throw new PostNotFoundError(`Post not found`);
 
         return comment;
-    }
+    },
+
+    deleteGroupByPostId: async postId => Comment.deleteMany({ postId: postId })
 }
 
 const mergeProperties = (savedComment, updates) => {

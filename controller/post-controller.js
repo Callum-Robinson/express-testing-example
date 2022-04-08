@@ -1,5 +1,6 @@
 const HttpError = require('../errors/http-error');
 const postService = require('../services/post-service');
+const commentService = require('../services/comment-service');
 const Post = require('../model/post');
 
 module.exports = {
@@ -55,7 +56,8 @@ module.exports = {
             const err = new HttpError(new Error(`Post not found with id ${req.params.id}`), 404);
             return next(err);
         }
-
+        // remove associated comments
+        await commentService.deleteGroupByPostId(post._id);
         res.status(200).json(post);
     }
 }
