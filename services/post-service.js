@@ -3,11 +3,11 @@ const Comment = require('../model/comment');
 
 module.exports = {
 
-    read: () => Post.find({}).populate('comments'),
+    read: async () => Post.find({}).populate('comments'),
 
-    readById: id => Post.findById(id).populate('comments'),
+    readById: async id => Post.findById(id).populate('comments'),
 
-    create: post => post.save(),
+    create: async post => post.save(),
 
     update: async post => {
         // search by unique indexes
@@ -29,9 +29,9 @@ module.exports = {
         return post.save();
     },
 
-    deleteByTitle: title => Post.findOneAndDelete({ title }),
+    deleteByTitle: async title => Post.findOneAndDelete({ title }),
     
-    deleteById: id => Post.findOneAndDelete({ _id: id })
+    deleteById: async id => Post.findOneAndDelete({ _id: id })
 }
 
 const mergeProperties = (savedPost, updates) => {

@@ -19,10 +19,10 @@ describe('Post integration test', function() {
     // do not use done as a parameter, only for callbacks, not async functions
     this.beforeEach(async () => {
         try {
-            console.log(postList);
             testData = await Post.insertMany(postList);
             commentData = await Comment.insertMany(commentList);
         } catch (err) {
+            console.error(err);
         }
         
     });
@@ -79,8 +79,8 @@ describe('Post integration test', function() {
                 .end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(404);
-                    expect(res).to.have.header('content-type', 'text/plain; charset=utf-8');
-                    expect(res).to.be.text;
+                    expect(res).to.have.header('content-type', 'application/json; charset=utf-8');
+                    expect(res).to.be.json;
                     expect(res).to.not.redirect;
                     done();
                 });
@@ -121,7 +121,7 @@ describe('Post integration test', function() {
                 .end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(400);
-                    expect(res).to.be.text;
+                    expect(res).to.be.json;
                     done();
                 });
         });
@@ -193,7 +193,7 @@ describe('Post integration test', function() {
                 .end((err, res) => {
                     expect(err).to.be.null;
                     expect(res).to.have.status(404);
-                    expect(res).to.be.text;
+                    expect(res).to.be.json;
                     done();
                 });
         });

@@ -5,6 +5,8 @@ const cors = require('cors');
 const users = require('./routes/users');
 const posts = require('./routes/posts');
 const comments = require('./routes/comments');
+const HttpError = require('./errors/http-error');
+
 const app = express();
 
 const PORT = process.env.SERVER_PORT || 3000;
@@ -24,38 +26,20 @@ if (process.env.NODE_ENV !== "production") {
 
 const errorLogger = (err, req, res, next) => {
     console.log(`Error encountered: ${req.path}`);
-    res.type('text/plain');
     next(err);
 }
 
-const errorResponse = (err, req, res, next) => {
-    console.log("error response code handler");
-    if (err.statusCode) {
-        return res.status(err.statusCode).send(err.message);
+const errorHandler = ((err, req, res, next) => {
+    if (typeof err != HttpError) {
+        err.statusCode = err.statusCode || 500;
+
+        if (err.name === 'ValidationError') {
+            err.statusCode = 400;
+        }
     }
-    next(err);
-}
-
-const mongooseErrorHandler = (err, req, res, next) => {
-    console.log("mongoose error handler");
-    if (err.name === 'ValidationError') {
-        //return handleValidationError(err, res);
-        return res.status(400).send(err.message);
-    } else if (err.code == 11000) {
-        //return handleDuplicateKeyError(err, res);
-        return res.status(400).send(err.message);
-    } else if (err.name === 'MongooseError') {
-        return res.status(400).send(err.message);
-    } else if (err.name === 'ReferenceError') {
-        return res.status(404).send(err.message);
-    }
-    next(err);
-}
-
-const genericErrorHandler = (err, req, res, next) => {
-    console.log("generic server error handler");
-    res.status(500).send(err);
-}
+    res.type('application/json');
+    return res.status(err.statusCode).json({ error: err.toString() });
+});
 
 app.options('*', cors()); // enable pre-flight request for routes other than GET/HEAD/POST
 app.use(express.json());
@@ -65,9 +49,7 @@ app.use('/user', users);
 app.use('/post', posts);
 app.use('/comment', comments);
 app.use(errorLogger);
-app.use(errorResponse);
-app.use(mongooseErrorHandler);
-app.use(genericErrorHandler);
+app.use(errorHandler);
 
 if (process.env.NODE_ENV === 'test') {
     connect(DB_URI);
