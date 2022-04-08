@@ -1,20 +1,18 @@
 const Comment = require('../model/comment');
 const Post = require('../model/post');
+const PostNotFoundError = require('../errors/post-not-found');
+const CommentNotFoundError = require('../errors/comment-not-found');
 
 module.exports = {
 
-    read: async () => await Comment.find().populate('postId'),
+    read: async () => Comment.find().populate('postId'),
 
-    readById: id => Comment.findById(id).populate('postId'),
+    readById: async id => Comment.findById(id).populate('postId'),
 
     create: async comment => {
         const post = await Post.findById(comment.postId);
+        if (!post) throw new PostNotFoundError(`Post not found with id ${comment.postId}`);
 
-        if (!post) {
-            const err = new Error(`Post not found with id ${comment.postId}`);
-            err.statusCode = 404;
-            throw err;
-        }
         const newComment = await comment.save();
         post.comments.push(newComment._id);
         await post.save();
@@ -37,12 +35,15 @@ module.exports = {
     
     deleteById: async id => {
         const comment = await Comment.findOneAndDelete({ _id: id });
+        if (!comment) throw new CommentNotFoundError(`Comment not found with id ${id}`);
+
         const post = await Post.findByIdAndUpdate({ _id: comment.postId }, {
             "$pull": {
                 "comments": comment._id
             }
         });
-        console.log(post);
+        if (!post) throw new PostNotFoundError(`Post not found`);
+
         return comment;
     }
 }
