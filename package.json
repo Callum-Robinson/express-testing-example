@@ -1,0 +1,28 @@
+{
+  "name": "blog-api",
+  "version": "1.0.0",
+  "description": "A simple CRUD API",
+  "main": "app.js",
+  "scripts": {
+    "start": "set NODE_ENV=production&& node app.js",
+    "dev": "SET NODE_ENV=development&& nodemon -r dotenv/config app.js",
+    "test": "SET NODE_ENV=test&& echo \"Starting tests\" && mocha --exit ./test/**/*.test.js",
+    "test:coverage": "nyc npm test"
+  },
+  "author": "Morgan Walsh <mwalsh@qa.com>",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.10",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.6",
+    "chai-http": "^4.3.0",
+    "dotenv": "^16.0.0",
+    "mocha": "^9.2.2",
+    "nodemon": "^2.0.15",
+    "nyc": "^15.1.0"
+  }
+}
