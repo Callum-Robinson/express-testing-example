@@ -2,6 +2,8 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+
 const users = require('./routes/users');
 const posts = require('./routes/posts');
 const comments = require('./routes/comments');
@@ -26,21 +28,25 @@ if (process.env.NODE_ENV !== "production") {
 
 const errorLogger = (err, req, res, next) => {
     console.log(`Error encountered: ${req.path}`);
+    console.log(`Error type: ${err.name}`);
     next(err);
 }
 
 const errorHandler = ((err, req, res, next) => {
-    if (typeof err != HttpError) {
-        err.statusCode = err.statusCode || 500;
+    console.error(err);
+    if (!(err instanceof HttpError)) {
+        console.error("Not a HTTP error");
 
         if (err.name === 'ValidationError') {
-            err.statusCode = 400;
-        }
+            console.error("Validation error");
+            err = new HttpError(err, 400);
+        } else err = new HttpError(err, err.statusCode || 500);
     }
     res.type('application/json');
     return res.status(err.statusCode).json({ error: err.toString() });
 });
 
+app.use(helmet());
 app.options('*', cors()); // enable pre-flight request for routes other than GET/HEAD/POST
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -11,16 +11,19 @@ module.exports = {
     readById: async(req, res, next) => {
         const post = await postService.readById(req.params.id).catch(next);
         
-        if (!post) {
-            const err = new HttpError(`Post not found with id ${req.params.id}`, 404);
-            return next(err);
+        if (post) {
+            res.status(200).json(post);
         }
-        res.status(200).json(post);
+        const err = new HttpError(new Error(`Post not found with id ${req.params.id}`), 404);
+        return next(err);
     },
 
     create: async(req, res, next) => {
         const post = await postService.create(new Post(req.body)).catch(next);
-        res.status(201).json(post);
+
+        if (post) {
+            res.status(201).json(post);
+        }
     },
 
     update: async(req, res, next) => {
@@ -37,7 +40,7 @@ module.exports = {
         const post = await postService.deleteByTitle(req.params.title).catch(next);
 
         if (!post) {
-            const err = new HttpError(`Post not found with title ${req.params.title}`, 404);
+            const err = new HttpError(new Error(`Post not found with title ${req.params.title}`), 404);
             err.statusCode = 404;
             return next(err);
         }
@@ -49,7 +52,7 @@ module.exports = {
         const post = await postService.deleteById(req.params.id).catch(next);
 
         if (!post) {
-            const err = new HttpError(`Post not found with id ${req.params.id}`, 404);
+            const err = new HttpError(new Error(`Post not found with id ${req.params.id}`), 404);
             return next(err);
         }
 

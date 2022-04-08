@@ -22,7 +22,7 @@ module.exports = {
 
     create: async(req, res, next) => {
         const comment = await commentService.create(new Comment(req.body)).catch(err => {
-            if (typeof err === PostNotFoundError) return next(new HttpError(err, 404));
+            if (err instanceof PostNotFoundError) return next(new HttpError(err, 404));
             return next(err);
         });
         res.status(201).json(comment);
@@ -35,8 +35,8 @@ module.exports = {
 
     deleteById: async(req, res, next) => {
         const comment = await commentService.deleteById(req.params.id).catch(err => {
-            if (typeof err === CommentNotFoundError) return next(new HttpError(err, 404));
-            else if (typeof err === PostNotFoundError) return next(new HttpError(err, 404));
+            if (err instanceof CommentNotFoundError) return next(new HttpError(err, 404));
+            else if (err instanceof PostNotFoundError) return next(new HttpError(err, 404));
             else return next(err);
         });
         res.status(200).json(comment);
