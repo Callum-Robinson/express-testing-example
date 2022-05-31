@@ -104,6 +104,29 @@ describe('User integration test', function() {
                     done();
                 });
         });
+
+        it('should return 400 - bad request if username taken', done => {
+            const user1 = new User({ 
+                username: "Tester",
+            });
+
+            user1.save();
+
+            const user2 = new User({
+                username: "Tester",
+            });
+
+            chai.request(app)
+                .post('/user')
+                .type('json')
+                .send(JSON.stringify(user2))
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(400);
+                    expect(res).to.be.json;
+                    done();
+                });
+        });
     });
 
 });
