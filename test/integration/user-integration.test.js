@@ -9,3 +9,24 @@ const expect = chai.expect;
 const should = chai.should();
 
 chai.use(chaiHttp);
+
+describe('User integration test', function() {
+    let testData = [];
+
+    this.beforeEach(async () => {
+        try {
+            await User.deleteMany();
+            testData = await User.insertMany(userList);
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    this.afterAll(async () => {
+        try {
+            await User.deleteMany();
+        } catch (err) {
+            console.error(err);
+        }
+    });
+});
