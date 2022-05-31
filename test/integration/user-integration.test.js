@@ -67,7 +67,7 @@ describe('User integration test', function() {
                 });
         });
 
-        it('should not return a post when called with an invalid id', done => {
+        it('should not return a user when called with an invalid id', done => {
             const id = ObjectId();
             chai.request(app)
                 .get(`/user/${id}`)
@@ -81,4 +81,29 @@ describe('User integration test', function() {
                 });
         });
     });
+
+    describe('POST /user', () => {
+        it('should return a new document if valid', done => {
+            const user = new User({
+                __v: 0,
+                username: "Tester",
+                email: "test@email.com",
+                createdAt: "2022-05-31T12:48:10.511Z",
+                admin: "false"
+            });
+
+            chai.request(app)
+                .post('/user')
+                .type('json')
+                .send(JSON.stringify(user))
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(201);
+                    expect(res).to.be.json;
+                    expect(res.body).to.deep.equal(JSON.parse(JSON.stringify(user)));
+                    done();
+                });
+        });
+    });
+
 });
