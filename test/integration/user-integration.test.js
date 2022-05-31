@@ -29,4 +29,23 @@ describe('User integration test', function() {
             console.error(err);
         }
     });
+
+    describe('GET /user', () => {
+        it('should return a list of users when called', done => {
+            chai.request(app)
+            .get('/user')
+            .end((err, res) => {
+                expect(err).to.be.null;
+                expect(res).to.have.status(200);
+                expect(res).to.have.header('content-type', 'application/json; charset=utf-8');
+                expect(res).to.be.json;
+                expect(res).to.not.redirect;
+                expect(res.body[0]).to.include.all.keys(['username', 'email', 'createdAt', 'admin']);
+                expect(res.body).to.be.a('array');
+                expect(res.body).to.deep.equal(JSON.parse(JSON.stringify(testData)));
+                expect(res.body.length).to.equal(testData.length);
+                done();
+            });
+        });
+    });
 });

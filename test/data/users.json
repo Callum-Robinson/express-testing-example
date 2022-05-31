@@ -2,11 +2,13 @@
     {
         "username": "Steve123",
         "email": "stevey@hotmail.com",
+        "createdAt": "2022-05-31T12:48:10.511Z",
         "admin": "false"
     },
     {
         "username": "Mark97",
         "email": "mark@gmail.com",
+        "createdAt": "2022-05-31T12:48:10.511Z",
         "admin": "true"
     }
 ]
