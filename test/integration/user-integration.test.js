@@ -48,4 +48,37 @@ describe('User integration test', function() {
             });
         });
     });
+
+    describe('GET /user/:id', () => {
+        it('should return a user when called with a valid id', done => {
+            const user = testData[0];
+            const id = user._id;
+            chai.request(app)
+                .get(`/user/${id}`)
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(200);
+                    expect(res).to.have.header('content-type', 'application/json; charset=utf-8');
+                    expect(res).to.be.json;
+                    expect(res).to.not.redirect;
+                    expect(res.body).to.include.all.keys(['username', 'email', 'createdAt', 'admin']);
+                    expect(res.body.username).to.equal(user.username);
+                    done();
+                });
+        });
+
+        it('should not return a post when called with an invalid id', done => {
+            const id = ObjectId();
+            chai.request(app)
+                .get(`/user/${id}`)
+                .end((err, res) => {
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(404);
+                    expect(res).to.have.header('content-type', 'application/json; charset=utf-8');
+                    expect(res).to.be.json;
+                    expect(res).to.not.redirect;
+                    done();
+                });
+        });
+    });
 });
